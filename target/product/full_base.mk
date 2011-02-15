@@ -33,7 +33,7 @@ PRODUCT_PROPERTY_OVERRIDES := \
     ro.com.android.dataroaming=false
 
 # Put en_US first in the list, to make it default.
-PRODUCT_LOCALES := en_US
+PRODUCT_LOCALES := es_ES
 
 # Pick up some sounds - stick with the short list to save space
 # on smaller devices.

@@ -18,6 +18,9 @@ PRODUCT_BRAND := generic
 PRODUCT_DEVICE := generic
 PRODUCT_NAME := core
 
+PRODUCT_PROPERTY_OVERRIDES := \
+    ro.config.alarm_alert=Beeps.mp3
+
 PRODUCT_PACKAGES := \
     bouncycastle \
     com.android.location.provider \

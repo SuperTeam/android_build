@@ -25,7 +25,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/board/generic/device.mk)
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.config.notification_sound=Bubbles.ogg \
     ro.config.alarm_alert=Alarm_Classic.ogg \
-    ro.config.ringtone=Uprising.ogg
+    ro.config.ringtone=Theway.mp3
 
 PRODUCT_PACKAGES += \
     libreference-ril

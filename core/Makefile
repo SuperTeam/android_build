@@ -731,8 +731,11 @@ $(RECOVERY_INSTALL_OTA_KEYS): $(OTA_PUBLIC_KEYS) $(DUMPKEY_JAR)
 TARGET_RECOVERY_ROOT_TIMESTAMP := $(TARGET_RECOVERY_OUT)/root.ts
 
 $(TARGET_RECOVERY_ROOT_TIMESTAMP): $(INTERNAL_RECOVERY_FILES) \
+		$(INSTALLED_RAMDISK_TARGET) \
+		$(INSTALLED_BOOTIMAGE_TARGET) \
 		$(recovery_binary) \
 		$(recovery_initrc) \
+		$(INSTALLED_2NDBOOTLOADER_TARGET) \
 		$(recovery_build_prop) $(recovery_resource_deps) \
 		$(recovery_fstab) \
 		$(RECOVERY_INSTALL_OTA_KEYS)
@@ -747,7 +750,11 @@ ifneq ($(BOARD_USES_COMBINED_RECOVERY),true)
 	rm $(TARGET_RECOVERY_ROOT_OUT)/init*.rc
 endif
 	echo Modifying ramdisk contents...
+ifeq ($(BOARD_USES_COMBINED_RECOVERY),true)
+	cp -f $(recovery_initrc) $(TARGET_RECOVERY_ROOT_OUT)/
+else
 	cp -f $(recovery_initrc) $(TARGET_RECOVERY_ROOT_OUT)/init.rc
+endif
 	cp -f $(recovery_binary) $(TARGET_RECOVERY_ROOT_OUT)/sbin/
 ifneq ($(BOARD_USES_COMBINED_RECOVERY),true)
 	rm -f $(TARGET_RECOVERY_ROOT_OUT)/init.*.rc
@@ -768,47 +775,29 @@ ifeq ($(BOARD_USES_COMBINED_RECOVERY),true)
 else
 	cat $(INSTALLED_DEFAULT_PROP_TARGET) $(recovery_build_prop) \
 	        > $(TARGET_RECOVERY_ROOT_OUT)/default.prop
+endif
 	@echo ----- Made recovery filesystem -------- $(TARGET_RECOVERY_ROOT_OUT)
 	@touch $(TARGET_RECOVERY_ROOT_TIMESTAMP)
 
-ifneq ($(BOARD_USES_MKIMAGE),true)
-
-$(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
-		$(TARGET_RECOVERY_ROOT_TIMESTAMP) \
-		$(INSTALLED_RAMDISK_TARGET) \
-		$(INSTALLED_BOOTIMAGE_TARGET) \
-		$(recovery_kernel) \
-		$(INSTALLED_2NDBOOTLOADER_TARGET)
-	@echo ----- Making recovery image ------
-	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk)
-	$(MKBOOTIMG) $(INTERNAL_RECOVERYIMAGE_ARGS) --output $@
-	@echo ----- Made recovery image -------- $@
-	$(hide) $(call assert-max-image-size,$@,$(BOARD_RECOVERYIMAGE_PARTITION_SIZE),raw)
-
-else
-
 ifeq ($(BOARD_USES_MKIMAGE),true)
 #BOARD_USES_MKIMAGE
-INTERNAL_RECOVERYIMAGE_ARGS := -A ARM -O Linux -T RAMDisk -C gzip -n Image -d $(recovery_ramdisk)
+INTERNAL_RECOVERYIMAGE_ARGS := -A ARM -O Linux -T RAMDisk -C gzip -n Image -d $(recovery_ramdisk).cpio.gz
 
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKIMAGE) $(MINIGZIP) \
 		$(TARGET_RECOVERY_ROOT_TIMESTAMP) \
-		$(INSTALLED_RAMDISK_TARGET) \
-		$(INSTALLED_BOOTIMAGE_TARGET) \
-		$(recovery_kernel) \
-		$(INSTALLED_2NDBOOTLOADER_TARGET)
+		$(recovery_kernel)
 	@echo ----- Making recovery image ------
-	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk)
-	$(MKIMAGE) $(INTERNAL_RECOVERYIMAGE_ARGS) $@
-	@echo ----- Made recovery image -------- $@
+	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk).cpio.gz
+	$(MKIMAGE) $(INTERNAL_RECOVERYIMAGE_ARGS) $(recovery_ramdisk)
+	@echo ----- Made recovery ramdisk -------- $(recovery_ramdisk)
+	$(hide) rm -f $@
+	zip -qDj $@ $(recovery_ramdisk) $(recovery_kernel)
+	@echo ----- Made recovery image \(zip\) -------- $@
 
 else ifeq ($(BOARD_USES_INITRAMFS),true)
 # BOARD_USES_INITRAMFS
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) \
-		$(TARGET_RECOVERY_ROOT_TIMESTAMP) \
-		$(INSTALLED_RAMDISK_TARGET) \
-		$(INSTALLED_BOOTIMAGE_TARGET) \
-		$(INSTALLED_2NDBOOTLOADER_TARGET)
+		$(TARGET_RECOVERY_ROOT_TIMESTAMP)
 	@echo ----- Making recovery image ------
 	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) > $@
 	@echo ----- Made recovery image -------- $@
@@ -817,10 +806,7 @@ $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) \
 else
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTFS) $(MKBOOTIMG) $(MINIGZIP) \
 		$(TARGET_RECOVERY_ROOT_TIMESTAMP) \
-		$(INSTALLED_RAMDISK_TARGET) \
-		$(INSTALLED_BOOTIMAGE_TARGET) \
-		$(recovery_kernel) \
-		$(INSTALLED_2NDBOOTLOADER_TARGET)
+		$(recovery_kernel)
 	@echo ----- Making recovery image ------
 	$(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk)
 	$(MKBOOTIMG) $(INTERNAL_RECOVERYIMAGE_ARGS) --output $@
@@ -1561,7 +1547,6 @@ $(INTERNAL_FINDBUGS_HTML_TARGET): $(INTERNAL_FINDBUGS_XML_TARGET)
 	$(INTERNAL_FINDBUGS_XML_TARGET)	> $@
 
 # -----------------------------------------------------------------
-
 # Findbugs
 
 # -----------------------------------------------------------------

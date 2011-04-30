@@ -764,12 +764,13 @@ docs: $(ALL_DOCS)
 .PHONY: sdk
 ALL_SDK_TARGETS := $(INTERNAL_SDK_TARGET)
 sdk: $(ALL_SDK_TARGETS)
-
-$(call dist-for-goals,sdk, \
-    $(ALL_SDK_TARGETS) \
-    $(SYMBOLS_ZIP) \
-    $(INSTALLED_BUILD_PROP_TARGET) \
-)
+ifneq ($(filter sdk win_sdk,$(MAKECMDGOALS)),)
+$(call dist-for-goals,sdk win_sdk, \
+	$(ALL_SDK_TARGETS) \
+	$(SYMBOLS_ZIP) \
+	$(INSTALLED_BUILD_PROP_TARGET) \
+ )
+endif
 
 .PHONY: findbugs
 findbugs: $(INTERNAL_FINDBUGS_HTML_TARGET) $(INTERNAL_FINDBUGS_XML_TARGET)

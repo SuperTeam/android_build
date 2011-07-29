@@ -32,7 +32,7 @@ else
 KERNEL_CONFIG_FILE := $(TARGET_KERNEL_DIR)/arch/$(TARGET_ARCH)/configs/$(TARGET_KERNEL_CONFIG)
 endif
 MOD_ENABLED := $(shell grep ^CONFIG_MODULES=y $(KERNEL_CONFIG_FILE))
-FIRMWARE_ENABLED := $(shell grep ^CONFIG_FIRMWARE_IN_KERNEL=y $(KERNEL_CONFIG_FILE))
+FIRMWARE_ENABLED := $(shell grep ^CONFIG_FIRMWARE_IN_KERNEL=n $(KERNEL_CONFIG_FILE))
 
 # I understand Android build system discourage to use submake,
 # but I don't want to write a complex Android.mk to build kernel.
@@ -63,7 +63,7 @@ ifeq ($(TARGET_PREBUILT_MODULES),)
 	$(if $(MOD_ENABLED),$(mk_kernel) INSTALL_MOD_PATH=$(CURDIR)/$(TARGET_OUT) modules_install)
 	$(hide) rm -f $(TARGET_OUT)/lib/modules/*/{build,source}
 else
-	$(hide) $(ACP) -r $(TARGET_PREBUILT_MODULES) $(TARGET_OUT)/lib	
+	$(hide) $(ACP) -r $(TARGET_PREBUILT_MODULES) $(TARGET_OUT)/lib
 endif
 
 	$(if $(FIRMWARE_ENABLED),$(mk_kernel) INSTALL_MOD_PATH=$(CURDIR)/$(TARGET_OUT) firmware_install)

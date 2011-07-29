@@ -427,7 +427,9 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(MKBOOTIMG) $(INTERNAL_BOOTIMAGE_FILES)
 	$(hide) $(call assert-max-image-size,$@,$(BOARD_BOOTIMAGE_PARTITION_SIZE),raw)
 endif # TARGET_BOOTIMAGE_USE_EXT2
 
-#include $(BUILD_SYSTEM)/kernel.mk
+ifeq ($(TARGET_CUSTOM_KERNEL),true)
+include $(BUILD_SYSTEM)/kernel.mk
+endif
 
 endif # standard ANDROID bootimg (not uboot multiimage)
 

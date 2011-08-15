@@ -50,7 +50,6 @@ PRODUCT_PACKAGES := \
     libicuuc \
     libjavacore \
     libnativehelper \
-    libnfc_ndef \
     libsqlite_jni \
     libssl \
     libz \
@@ -74,6 +73,12 @@ PRODUCT_PACKAGES := \
     PackageInstaller \
     DefaultContainerService \
     Bugreport
+    
+ifeq ($(BOARD_HAVE_NFC),true) 
+    PRODUCT_PACKAGES += \
+	    libnfc_ndef
+endif
+	    
 
 # host-only dependencies
 ifeq ($(WITH_HOST_DALVIK),true)

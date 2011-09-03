@@ -25,8 +25,9 @@ PRODUCT_PACKAGES := \
 PRODUCT_PROPERTY_OVERRIDES := \
     keyguard.no_require_sim=true
 
-# Put en_US first in the list, to make it default.
-PRODUCT_LOCALES := en_US
+$(call inherit-product, device/common/gps/gps_eu_supl.mk)
+
+PRODUCT_LOCALES := es_ES
 
 # Pick up some sounds - stick with the short list to save space
 # on smaller devices.

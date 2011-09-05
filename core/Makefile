@@ -1373,7 +1373,7 @@ ifeq ($(TARGET_USES_LEOUPDATE), true)
 endif
 	$(hide) \
 	WANT_SQUASHFS=$(WANT_SQUASHFS) \
-	./vendor/cyanogen/tools/squisher
+	./vendor/SuperTeam/tools/squisher
 else
 	$(hide) \
 	WANT_SQUASHFS=$(WANT_SQUASHFS) \

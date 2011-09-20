@@ -486,7 +486,7 @@ function breakfast()
     CM_DEVICES_ONLY="true"
     unset LUNCH_MENU_CHOICES
     add_lunch_combo full-eng
-    for f in `/bin/ls vendor/cyanogen/vendorsetup.sh vendor/cyanogen/build/vendorsetup.sh 2> /dev/null`
+    for f in `/bin/ls vendor/SuperTeam/vendorsetup.sh vendor/SuperTeam/build/vendorsetup.sh 2> /dev/null`
         do
             echo "including $f"
             . $f
@@ -503,7 +503,7 @@ function breakfast()
             lunch $target
         else
             # This is probably just the CM model name
-            lunch cyanogen_$target-eng
+            lunch team_$target-eng
         fi
     fi
     return $?
@@ -628,7 +628,7 @@ function tapas()
 function eat()
 {
     if [ "$OUT" ] ; then
-        MODVERSION=`sed -n -e'/ro\.modversion/s/^.*CyanogenMod-//p' $OUT/system/build.prop`
+        MODVERSION=`sed -n -e'/ro\.modversion/s/^.*SuperOSR-//p' $OUT/system/build.prop`
         ZIPFILE=update-cm-$MODVERSION-signed.zip
         ZIPPATH=$OUT/$ZIPFILE
         if [ ! -f $ZIPPATH ] ; then

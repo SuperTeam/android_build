@@ -441,9 +441,9 @@ function add_lunch_combo()
 
 # if we're on linux, add the simulator.  There is a special case
 # in lunch to deal with the simulator
-if [ "$(uname)" = "Linux" ] ; then
+#if [ "$(uname)" = "Linux" ] ; then
     #add_lunch_combo simulator
-fi
+#fi
 
 function print_lunch_menu()
 {

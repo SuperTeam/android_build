@@ -19,12 +19,8 @@
 # bes used for AOSP builds on various target devices.
 
 PRODUCT_PACKAGES := \
-    OpenWnn \
-    PinyinIME \
     VoiceDialer \
-    libWnnEngDic \
-    libWnnJpnDic \
-    libwnndict
+    libWnnEngDic 
 
 # Additional settings used in all AOSP builds
 PRODUCT_PROPERTY_OVERRIDES := \

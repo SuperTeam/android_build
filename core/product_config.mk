@@ -206,6 +206,9 @@ INTERNAL_PRODUCT := $(call resolve-short-product-name, $(TARGET_PRODUCT))
 # Find the device that this product maps to.
 TARGET_DEVICE := $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_DEVICE)
 
+# Find the subdevice that this product maps to.
+TARGET_SUBDEVICE := $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_SUBDEVICE)
+
 # Figure out which resoure configuration options to use for this
 # product.
 PRODUCT_LOCALES := $(strip $(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_LOCALES))
